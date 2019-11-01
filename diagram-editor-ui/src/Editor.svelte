@@ -107,8 +107,8 @@
         nodes: [
             {
                 id: 0, type: 'sequence', children: [
-                    { id: 1, type: 'receive', label: 'MyService' },
-                    { id: 2, type: 'invoke', label: 'OtherService' },
+                    { id: 1, type: 'receive', label: 'My Service' },
+                    { id: 2, type: 'invoke', label: 'Other Service' },
                     {
                         id: 3, type: 'choose', label: 'Node 3', children: [
                             {
@@ -132,7 +132,7 @@
                             },
                         ]
                     },
-                    { id: 11, type: 'reply', label: 'MyService' },
+                    { id: 11, type: 'reply', label: 'Last Service' },
                 ]
             },
         ],

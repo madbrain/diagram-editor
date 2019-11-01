@@ -7,6 +7,13 @@ import { PaletteBox } from "./palette";
 import { createDiagramBox, cloneNode } from "./app";
 import * as svgjs from "@svgdotjs/svg.js";
 
+interface DraggedNode {
+    node: DiagramNode;
+    bounds: Rectangle;
+    index: number;
+    parent: DiagramNode;
+}
+
 export interface DirectEditComponent {
     start(directEdit: DirectEdit, cb: (newValue: string) => void);
     cancel();
@@ -48,20 +55,24 @@ export class Context {
         }
     }
 
-    mayInsertNode(point: Point, node: DiagramNode) {
-        if (this.dragOn != null) {
-            const dropZone = this.dragOn.findZone(point);
-            if (dropZone != null) {
-                this.dragOn.node.children.splice(dropZone.index, 0,
-                    dropZone.wrap(node));
-                // TODO could modification of diagram can be optimized ?
-                this.svgNodes.clear();
-                this.root = createDiagramBox(this.model, this.svgNodes);
-            }
+    mayInsertNode(point: Point, draggedNode: DraggedNode) {
+        const dropZone = this.dragOn != null ? this.dragOn.findZone(point) : null;
+        if (dropZone != null) {
+            this.dragOn.node.children.splice(dropZone.index, 0, dropZone.wrap(draggedNode.node));
+            this.refresh();
+        } else if (draggedNode.parent) {
+            draggedNode.parent.children.splice(draggedNode.index, 0, draggedNode.node);
+            this.refresh();
         }
     }
 
-    removeSelection() {
+    refresh() {
+        // TODO could modification of diagram can be optimized ?
+        this.svgNodes.clear();
+        this.root = createDiagramBox(this.model, this.svgNodes);
+    }
+
+    removeSelection(): DraggedNode {
         if (this.selection.parent.node.type == 'when') {
             const whenElement = <CompositeBox>this.selection.parent;
             const whenParent = <CompositeBox>whenElement.parent;
@@ -69,9 +80,17 @@ export class Context {
                 this.selection = whenElement;
             }
         }
+        const oldSelection = this.selection;
+        const index = oldSelection.parent.node.children.indexOf(oldSelection.node);
         this.selection.parent.removeChild(this.selection);
         this.selection = null;
         this.root.layout();
+        return {
+            node: oldSelection.node,
+            bounds: oldSelection.bounds,
+            parent: oldSelection.parent.node,
+            index: index
+        };
     }
 
 }
@@ -141,9 +160,8 @@ class DetectDragState implements State {
     
     mouseMove(event) {
         if (this.detectMove(event.point)) {
-            const selection = this.context.selection;
-            this.context.removeSelection();
-            return new StartDragItem(selection.node, selection.bounds, event.point, this.context);
+            const draggedNode = this.context.removeSelection();
+            return new StartDragItem(draggedNode, event.point, this.context);
         }
         return this;
     }
@@ -212,7 +230,8 @@ class StartDragItem implements State {
     svgElement: svgjs.Container;
     svgCursor: svgjs.Element;
 
-    constructor(private node: DiagramNode, bounds: Rectangle, point: Point, private context: Context) {
+    constructor(private draggedNode: DraggedNode, point: Point, private context: Context) {
+        const bounds = draggedNode.bounds;
         this.svgElement = this.context.svgFeedback.group()
             .attr('class', 'drag-element')
             .attr('transform', 'translate(' + bounds.x + ',' + bounds.y + ')');
@@ -258,7 +277,7 @@ class StartDragItem implements State {
         if (this.svgCursor != null) {
             this.svgCursor.remove();
         }
-        this.context.mayInsertNode(point, this.node);
+        this.context.mayInsertNode(point, this.draggedNode);
         return new IdleState(this.context);
     }
 
@@ -281,7 +300,8 @@ class OnPaletteState implements State {
         const point = event.point;
         const item = this.context.palette.findElement(point);
         if (item != null) {
-            return new StartDragItem(cloneNode(item.node), item.bounds, point, this.context);
+            const draggedNode = { node: cloneNode(item.node), bounds: item.bounds, index: -1, parent: null };
+            return new StartDragItem(draggedNode, point, this.context);
         }
         return this;
     }
