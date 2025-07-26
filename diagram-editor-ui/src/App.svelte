@@ -1,31 +1,26 @@
-<NavBar name="Diagram Editor"/>
+<script lang="ts">
+  import Header from "./components/Header.svelte";
+  import Editor from "./Editor.svelte";
+</script>
 
-<main role="main" class="container-fluid">
-
-  <div class="starter-template">
-    <Router {routes}/>
-  </div>
-
-</main><!-- /.container -->
+<div class="root">
+  <Header />
+  <Editor />
+</div>
 
 <style>
-:global(body) {
-  padding-top: 5rem;
-}
-.starter-template {
-  padding: 3rem 1.5rem;
-  text-align: center;
-}
+  @import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
+  :global(html, body) {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: Roboto;
+  }
+
+  .root {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
 </style>
-
-<script>
-    import NavBar from './NavBar.svelte';
-    import Editor from './Editor.svelte';
-    import Other from './Other.svelte';
-    import Router from 'svelte-spa-router';
-
-    let routes = {
-        '/': Editor,
-        '/other': Other
-    };
-</script>

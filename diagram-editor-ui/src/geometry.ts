@@ -1,46 +1,69 @@
+export class Point {
+  constructor(public x: number, public y: number) {}
 
-export enum Alignment {
-    TOP = 0,
-    LEFT = 0,
-    CENTER = 1,
-    BOTTOM = 2,
-    RIGHT = 2,
-}
+  centeredRect(width: number, height: number) {
+    return new Rectangle(
+      this.x - width / 2,
+      this.y - height / 2,
+      width,
+      height
+    );
+  }
 
-export interface Margin {
-    left: number;
-    right: number;
-    top: number;
-    bottom: number;
-}
+  rect(width: number, height: number) {
+    return new Rectangle(this.x, this.y, width, height);
+  }
 
-export interface Point {
-    x: number;
-    y: number;
-}
+  distance(other: Point) {
+    const dx = this.x - other.x;
+    const dy = this.y - other.y;
+    return Math.sqrt(dx * dx + dy * dy);
+  }
 
-export interface Offset {
-    dx: number;
-    dy: number;
+  move(dx: number, dy: number): Point {
+    return new Point(this.x + dx, this.y + dy);
+  }
 }
 
 export class Rectangle {
+  constructor(
+    public x: number,
+    public y: number,
+    public width: number,
+    public height: number
+  ) {}
 
-    constructor(public x: number, public y: number, public width: number, public height: number) { }
+  contains(p: Point) {
+    return (
+      this.x <= p.x &&
+      p.x < this.corner().x &&
+      this.y <= p.y &&
+      p.y < this.corner().y
+    );
+  }
 
-    contains(point: Point): boolean {
-        return this.x <= point.x && this.y <= point.y
-            && point.x < (this.x + this.width) && point.y < (this.y + this.height);
-    }
-    midWest() {
-        return { x: this.x, y: this.y + this.height / 2 };
-    }
+  corner() {
+    return new Point(this.x + this.width, this.y + this.height);
+  }
 
-    midEast() {
-        return { x: this.x + this.width, y: this.y + this.height / 2 };
-    }
-}
+  expand(amount: number): Rectangle {
+    return new Rectangle(
+      this.x - amount,
+      this.y - amount,
+      this.width + amount * 2,
+      this.height + amount * 2
+    );
+  }
 
-export function distance(a: Point, b: Point) {
-    return Math.sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
+  center() {
+    return new Point(this.x + this.width / 2, this.y + this.height / 2);
+  }
+
+  topCenter() {
+    return new Point(this.x + this.width / 2, this.y);
+  }
+
+  topRight() {
+    return new Point(this.x + this.width, this.y);
+  }
 }

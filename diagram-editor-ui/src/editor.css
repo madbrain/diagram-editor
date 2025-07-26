@@ -1,0 +1,27 @@
+div.editor-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.directEdit {
+    display: none;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    z-index: 10;
+}
+
+.directEdit.opened {
+    display: block;
+}
+
+.directEdit input {
+    position: absolute;
+    border: solid 1px gray;
+    outline: none;
+}
