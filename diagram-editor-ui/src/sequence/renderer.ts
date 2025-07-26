@@ -189,7 +189,7 @@ export class DiagramView implements View {
     public model: DiagramModel,
     private style: Style,
     private measurer: Measurer,
-    private svg: Svg,
+    private svg: G,
     public directEdit: (command: DirectEditCommand) => Promise<string>,
     public commandStack: CommandStack
   ) {

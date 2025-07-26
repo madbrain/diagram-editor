@@ -20,3 +20,16 @@ export function choiceNot<T>(e: T, list: T[]) {
 export function choice<T>(list: T[]): T {
   return list[Math.floor(Math.random() * list.length)];
 }
+
+export function randomId() {
+  let result = "";
+  for (let i = 0; i < 10; ++i) {
+    var x = Math.floor(Math.random() * 26 * 2);
+    if (x < 26) {
+      result += String.fromCharCode("A".charCodeAt(0) + x);
+    } else {
+      result += String.fromCharCode("a".charCodeAt(0) + x - 26);
+    }
+  }
+  return result;
+}

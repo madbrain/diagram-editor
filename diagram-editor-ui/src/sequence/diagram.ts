@@ -31,7 +31,7 @@ const diagram: DiagramType = {
       model,
       DEFAULT_STYLE,
       editor.measurer,
-      editor.svg,
+      editor.content,
       (directEdit) => editor.directEdit.start(directEdit),
       editor.commandStack
     );

@@ -5,18 +5,24 @@
   import { faUndo, faRedo } from "@fortawesome/free-solid-svg-icons";
   import type { StackEvent } from "./command";
   import type { DiagramType } from "./diagram";
-  import diagramType from "./sequence/diagram";
+  // import diagramType from "./sequence/diagram";
 
-  // export let diagramType: DiagramType = ;
+  export let diagramType: DiagramType;
 
   let container: HTMLElement;
   let editor: Editor;
   let paletteState: StackEvent = { canUndo: false, canRedo: false };
 
   onMount(() => {
-    editor = new Editor(diagramType, { container });
+    editor = new Editor(diagramType, {
+      container,
+      collaborationUrl: "ws://localhost:3000",
+    });
     editor.onStackChange((e) => {
       paletteState = e;
+    });
+    editor.onPresenceChange((users) => {
+      // console.log("USERS", users);
     });
   });
 </script>

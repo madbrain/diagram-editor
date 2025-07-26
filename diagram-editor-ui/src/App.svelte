@@ -1,11 +1,12 @@
 <script lang="ts">
   import Header from "./components/Header.svelte";
   import Editor from "./Editor.svelte";
+  import diagramType from "./sequence/diagram";
 </script>
 
 <div class="root">
   <Header />
-  <Editor />
+  <Editor {diagramType} />
 </div>
 
 <style>
@@ -22,5 +23,4 @@
     flex-direction: column;
     height: 100%;
   }
-
 </style>
