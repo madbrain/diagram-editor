@@ -18,7 +18,7 @@
     "typescript": "^3.6.3",
     "webpack": "^4.35.0",
     "webpack-cli": "^3.3.5",
-    "webpack-dev-server": "^3.7.2"
+    "webpack-dev-server": "^5.2.1"
   },
   "dependencies": {
     "@svgdotjs/svg.js": "^3.0.13",
