@@ -1,4 +1,4 @@
-# diagram-editor
+# Diagram Editor
 
 Collaborative Diagram Editor
 
